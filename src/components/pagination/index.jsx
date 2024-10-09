@@ -25,7 +25,7 @@ export const Pagination = ({ totalCount, filterData, setFilterValue }) => {
     if (currentPage < totalCount) {
       setCurrentPage((old) => old + 1);
       setFilterValue({
-        id: filterData?.type ? filterData?.id * 20 : currentPage * 100,
+        id: filterData?.path ? filterData?.id * 2 : currentPage * 100,
         page: currentPage * 10,
         ...(path ? { path } : {}),
       });
@@ -36,18 +36,22 @@ export const Pagination = ({ totalCount, filterData, setFilterValue }) => {
     if (currentPage > 1) {
       setCurrentPage((old) => old - 1);
       setFilterValue({
-        id: filterData?.type ? filterData?.id * 20 : currentPage * 100,
+        id: filterData?.path ? filterData?.id / 2 : currentPage * 100,
         page: (currentPage - 2) * 10,
         ...(path ? { path } : {}),
       });
     }
   };
 
-  const handleStepWithClick = (num) => {
+  const handleStepWithClick = async (num) => {
     setCurrentPage(num);
 
     setFilterValue({
-      id: filterData?.type ? filterData?.id * 20 : num * 100,
+      id: filterData?.path
+        ? num > currentPage
+          ? filterData?.id * 2
+          : filterData?.id / 2
+        : num * 100,
       page: (num - 1) * 10,
       ...(path ? { path } : {}),
     });

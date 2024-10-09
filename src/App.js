@@ -10,14 +10,21 @@ const App = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [filterValue, setFilterValue] = useState({});
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["all-products", filterValue?.id],
-    queryFn: async () => {
+  const { data, isLoading, isPending } = useQuery({
+    queryKey: [
+      "all-products",
+      filterValue?.id ? filterValue?.id : 100,
+      filterValue,
+    ],
+    queryFn: async (context) => {
+      const prop = context.queryKey[2];
+      console.log(context.queryKey);
       const response = await GetAllProductsApi(
-        `products${filterValue?.path ? filterValue.path : ""}?limit=10&skip=${filterValue?.page ? `${filterValue?.page}` : "0"}&select=description,price,thumbnail,title`,
+        `products${prop?.path ? prop.path : ""}?limit=10&skip=${prop?.page ? `${prop?.page}` : "0"}&select=description,price,thumbnail,title`,
       );
       return response.data;
     },
+    refetchInterval: 1200000,
   });
 
   const { data: categories, isLoading: filterLoading } = useQuery({
@@ -27,6 +34,7 @@ const App = () => {
 
       return response.data;
     },
+    refetchInterval: 1200000,
   });
 
   useEffect(() => {
@@ -49,12 +57,12 @@ const App = () => {
       />
       <div
         className={
-          isLoading || (products && products.length < 2)
+          isLoading || isPending || (products && products.length < 2)
             ? "flex justify-center items-center h-[850px] w-full"
             : ""
         }
       >
-        {isLoading ? (
+        {isLoading || isPending ? (
           <p className="">Loading...</p>
         ) : products && products.length > 0 ? (
           <>
