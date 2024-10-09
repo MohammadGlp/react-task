@@ -21,40 +21,50 @@ export const Pagination = ({ totalCount, filterData, setFilterValue }) => {
     }
   }, [filterData]);
 
+  const updateFilterState = (id, page, path) => {
+    setFilterValue({
+      id,
+      page,
+      ...(path ? { path } : {}),
+    });
+  };
+
   const handleNextStep = () => {
     if (currentPage < totalCount) {
       setCurrentPage((old) => old + 1);
-      setFilterValue({
-        id: filterData?.path ? filterData?.id * 2 : currentPage * 100,
-        page: currentPage * 10,
-        ...(path ? { path } : {}),
-      });
+
+      updateFilterState(
+        filterData?.path ? filterData?.id * 2 : (currentPage + 1) * 100,
+        currentPage * 10,
+        path,
+      );
     }
   };
 
   const handlePrevStep = () => {
     if (currentPage > 1) {
       setCurrentPage((old) => old - 1);
-      setFilterValue({
-        id: filterData?.path ? filterData?.id / 2 : currentPage * 100,
-        page: (currentPage - 2) * 10,
-        ...(path ? { path } : {}),
-      });
+
+      updateFilterState(
+        filterData?.path ? filterData?.id / 2 : (currentPage - 1) * 100,
+        (currentPage - 2) * 10,
+        path,
+      );
     }
   };
 
   const handleStepWithClick = async (num) => {
     setCurrentPage(num);
 
-    setFilterValue({
-      id: filterData?.path
+    updateFilterState(
+      filterData?.path
         ? num > currentPage
           ? filterData?.id * 2
           : filterData?.id / 2
         : num * 100,
-      page: (num - 1) * 10,
-      ...(path ? { path } : {}),
-    });
+      (num - 1) * 10,
+      path,
+    );
   };
 
   const mutateArrayForPagination = () => {

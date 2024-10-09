@@ -11,16 +11,10 @@ const App = () => {
   const [filterValue, setFilterValue] = useState({});
 
   const { data, isLoading, isPending } = useQuery({
-    queryKey: [
-      "all-products",
-      filterValue?.id ? filterValue?.id : 100,
-      filterValue,
-    ],
+    queryKey: ["all-products", filterValue?.id ? filterValue?.id : 100],
     queryFn: async (context) => {
-      const prop = context.queryKey[2];
-      console.log(context.queryKey);
       const response = await GetAllProductsApi(
-        `products${prop?.path ? prop.path : ""}?limit=10&skip=${prop?.page ? `${prop?.page}` : "0"}&select=description,price,thumbnail,title`,
+        `products${filterValue?.path ? filterValue.path : ""}?limit=10&skip=${filterValue?.page ? `${filterValue?.page}` : "0"}&select=description,price,thumbnail,title`,
       );
       return response.data;
     },
@@ -45,7 +39,7 @@ const App = () => {
   }, [isLoading, data]);
 
   return (
-    <div className={"m-3"}>
+    <div className={"flex flex-col justify-between gap-y-3 m-3"}>
       <Header
         preProducts={data ? data?.products : []}
         products={products}
