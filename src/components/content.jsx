@@ -10,6 +10,8 @@ export const Content = ({ products }) => {
             src={item.thumbnail}
             alt={`picture item ${item.id}`}
             className="w-full h-72 object-contain"
+            loading="lazy"
+            height={288}
           />
           <div className="text-center flex flex-col gap-2">
             <h1 className="font-semibold font-sans">{item.title}</h1>
